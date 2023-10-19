@@ -1,0 +1,44 @@
+---
+stages:
+  - validate
+  - upload
+
+validate_tf:
+  image:
+    name: harbor.prod.paas.pop.noris.de/dockerhub/hashicorp/terraform:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  stage: validate
+  before_script:
+    - git config --global url."https://oauth2:${tf_modules}@gitlab.noris.net".insteadOf https://gitlab.noris.net
+    - terraform init -backend=false
+  script:
+    - terraform validate
+
+lint_tf:
+  image:
+    name: harbor.prod.paas.pop.noris.de/dockerhub/hashicorp/terraform:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  stage: validate
+  before_script:
+    - git config --global url."https://oauth2:${tf_modules}@gitlab.noris.net".insteadOf https://gitlab.noris.net
+    - terraform init -backend=false
+  script:
+    - terraform fmt -check=true -recursive
+
+upload:
+  image: harbor.prod.paas.pop.noris.de/dockerhub/curlimages/curl:latest
+  variables:
+    TERRAFORM_MODULE_DIR: ${CI_PROJECT_DIR}
+    TERRAFORM_MODULE_NAME: ${CI_PROJECT_NAME}
+    TERRAFORM_MODULE_SYSTEM: "vcd"
+    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG}
+  stage: upload
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - tar -cvzf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
