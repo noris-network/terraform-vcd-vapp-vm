@@ -75,7 +75,7 @@ resource "vcd_vapp_vm" "vapp_vm" {
     content {
       type               = try(network.value.type, "org")
       adapter_type       = try(network.value.adapter_type, "VMXNET3")
-      name               = network.key
+      name               = network.value.name
       ip_allocation_mode = try(network.value.ip_allocation_mode, "POOL")
       ip                 = try(network.value.ip_allocation_mode, "POOL") == "MANUAL" ? network.value.ip : null
       is_primary         = try(network.value.is_primary, null)
