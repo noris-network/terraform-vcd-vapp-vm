@@ -226,6 +226,12 @@ variable "override_template_disks" {
   default = []
 }
 
+variable "catalog_org_name" {
+  description = "Name of Org where the Catalog is found if it is not in a catalog created by the same Org."
+  type        = string
+  default     = null
+}
+
 variable "catalog_name" {
   description = "Catalog where the vApp template is found."
   type        = string

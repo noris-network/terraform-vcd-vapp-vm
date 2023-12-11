@@ -1,4 +1,5 @@
 data "vcd_catalog" "catalog" {
+  org  = var.catalog_org_name
   name = var.catalog_name
 }
 
