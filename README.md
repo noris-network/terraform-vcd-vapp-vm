@@ -45,6 +45,7 @@ No modules.
 | <a name="input_accept_all_eulas"></a> [accept\_all\_eulas](#input\_accept\_all\_eulas) | Automatically accept EULA if OVA has it. | `bool` | `true` | no |
 | <a name="input_boot_image_id"></a> [boot\_image\_id](#input\_boot\_image\_id) | Media URN to mount as boot image. | `string` | `null` | no |
 | <a name="input_catalog_name"></a> [catalog\_name](#input\_catalog\_name) | Catalog where the vApp template is found. | `string` | `null` | no |
+| <a name="input_catalog_org_name"></a> [catalog\_org\_name](#input\_catalog\_org\_name) | Name of Org where the Catalog is found if it is not in a catalog created by the same Org. | `string` | `null` | no |
 | <a name="input_computer_name"></a> [computer\_name](#input\_computer\_name) | Computer name to assign to this virtual machine. | `string` | `null` | no |
 | <a name="input_cpu_cores"></a> [cpu\_cores](#input\_cpu\_cores) | The number of cores per socket. | `number` | `null` | no |
 | <a name="input_cpu_hot_add_enabled"></a> [cpu\_hot\_add\_enabled](#input\_cpu\_hot\_add\_enabled) | True if the virtual machine supports addition of virtual CPUs while powered on. | `bool` | `false` | no |
