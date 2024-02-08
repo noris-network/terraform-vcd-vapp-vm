@@ -118,20 +118,17 @@ resource "vcd_vapp_vm" "vapp_vm" {
 }
 
 resource "vcd_vm_internal_disk" "vm_internal_disk" {
-  for_each = {
-    for index, disk in var.internal_disks :
-    disk.unit_number => disk
-  }
+  count           = var.internal_disks != null ? length(var.internal_disks) : 0
   org             = var.vdc_org_name
   vdc             = var.vdc_name
   vapp_name       = data.vcd_vapp.vapp.name
   vm_name         = var.name
-  bus_type        = each.value.bus_type
-  size_in_mb      = each.value.size_in_mb
-  bus_number      = each.value.bus_number
-  unit_number     = each.value.unit_number
-  iops            = try(each.value.iops, 0)
-  allow_vm_reboot = try(each.value.allow_vm_reboot, false)
-  storage_profile = var.storage_profile_name
+  bus_type        = var.internal_disks[count.index].bus_type
+  size_in_mb      = var.internal_disks[count.index].size_in_mb
+  bus_number      = var.internal_disks[count.index].bus_number
+  unit_number     = var.internal_disks[count.index].unit_number
+  iops            = try(var.internal_disks[count.index].iops, 0)
+  allow_vm_reboot = try(var.internal_disks[count.index].allow_vm_reboot, false)
+  storage_profile = try(var.internal_disks[count.index].storage_profile_name, var.storage_profile_name)
   depends_on      = [resource.vcd_vapp_vm.vapp_vm]
 }

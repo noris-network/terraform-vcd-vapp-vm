@@ -252,10 +252,11 @@ variable "vapp_name" {
 variable "internal_disks" {
   description = "A list of internal disks to add to this machine."
   type = list(object({
-    size_in_mb  = number
-    bus_type    = string
-    bus_number  = number
-    unit_number = number
+    size_in_mb           = number
+    bus_type             = string
+    bus_number           = number
+    unit_number          = number
+    storage_profile_name = optional(string)
   }))
   default = []
 }
