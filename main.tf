@@ -123,7 +123,7 @@ resource "vcd_vm_internal_disk" "vm_internal_disk" {
   vdc             = var.vdc_name
   vapp_name       = data.vcd_vapp.vapp.name
   vm_name         = var.name
-  bus_type        = var.internal_disks[count.index].bus_type
+  bus_type        = try(var.internal_disks[count.index].bus_type, "paravirtual")
   size_in_mb      = var.internal_disks[count.index].size_in_mb
   bus_number      = var.internal_disks[count.index].bus_number
   unit_number     = var.internal_disks[count.index].unit_number
